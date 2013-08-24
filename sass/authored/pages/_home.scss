@@ -1,0 +1,29 @@
+////////////////////////////////
+//         HOME PAGE
+////////////////////////////////
+
+.page {
+
+  @include container;
+  padding: 0;
+
+  .site-header {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 99px;
+  }
+
+  .banner {
+    height: 384px;
+  }
+
+  // 2-column layout.
+  .left-column {
+    @include span-columns( 6, 12 );
+  }
+  .right-column {
+    @include span-columns( 6 omega, 12 );
+  }
+    
+}

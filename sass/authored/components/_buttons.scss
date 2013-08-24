@@ -1,0 +1,150 @@
+////////////////////////////////
+//         BUTTONS
+////////////////////////////////
+
+button,
+.button {
+  display: inline-block;
+  vertical-align: middle;
+  border: none;
+  background-color: $blue;
+  color: white;
+  @include text-shadow(rgba(0, 0, 0, 0.2) 0 1px 0);
+  @include border-radius( 3px );
+
+  &:hover {
+    background-color: $blue-hover;
+  }
+  
+  &:active {
+    background-color: $blue-active;
+    @include box-shadow(rgba(0, 0, 0, .1) 0 2px 0 0 inset);
+  }
+
+  &.button--disabled {
+    cursor: auto;
+    pointer-events: none;
+  }
+
+  &.button--text {
+    padding: 14px 28px;
+  }
+
+  &.button--full-width {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/*-----------------------------
+/*----- OUTER DECORATION ------
+-----------------------------*/
+
+.button-wrapper {
+  
+  display: inline-block;
+  background-color: rgba( #0b1a3b, .3 );
+  border: 1px solid rgba( white, .5 );
+
+  @include border-radius( 40px );
+
+  .cta-button {
+    margin: 8px 10px;
+  }
+}
+
+
+/*-----------------------------
+/*----- INNER DECORATION ------
+-----------------------------*/
+
+.button__divider {
+  display: inline-block;
+  vertical-align: middle;
+  width: 2px;
+  height: 21px;
+  margin-right: 11px;
+  background: url( 'images/button-divider.png' ) no-repeat;
+}
+
+.button__fb-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 10px;
+  height: 20px;
+  margin-right: 11px;
+  background: url( 'images/fb-icon.png' ) no-repeat;
+}
+
+.button__google-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 14px;
+  height: 22px;
+  margin-right: 11px;
+  background: url( 'images/google-icon.png' ) no-repeat;
+}
+
+/*-----------------------------
+/*----------- CTAs ------------
+-----------------------------*/
+
+// CTA base.
+.cta-button {
+
+  height: 40px;
+  padding: 0 20px;
+  font-family: $micro-font;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: white;
+  text-transform: uppercase;
+
+  @include border-radius( 20px );
+}
+
+// Facebook CTA.
+.cta-button--fb {
+
+  background-color: $facebook-blue;
+
+  &:hover {
+    background-color: $facebook-blue-hover;
+  }
+
+}
+
+// Google CTA.
+.cta-button--google {
+
+  background-color: $google-red;
+
+  &:hover {
+    background-color: $google-red-hover;
+  }
+
+}
+
+/*-----------------------------
+/*------- CLOSE BUTTON --------
+-----------------------------*/
+
+.close-button {
+  $radius: 15px;
+  width: $radius * 2;
+  height: $radius * 2;
+  background: $button-gray url( 'images/close-button-icon.png' ) no-repeat;
+  background-position: 10px;
+  @include border-radius( $radius );
+
+  &:hover {
+    background-color: $button-gray-hover;
+    @include box-shadow( rgba(0, 0, 0, .2 ) 0 2px 1px );
+  }
+
+  &:active {
+    background-color: $button-gray-active;
+    @include box-shadow( rgba( 0, 0, 0, .2 ) 0 2px 1px 0 inset );
+  }
+}

@@ -1,0 +1,71 @@
+////////////////////////////////
+//           HEADER
+////////////////////////////////
+
+.site-header {
+  
+  display: block;
+  clear: both;
+  background-color: white;
+  @include clearfix;
+
+  .header__inner {
+    position: relative;
+  }
+
+}
+
+.header__logo {
+
+  position: absolute;
+  top: 37px;
+  left: 45px;
+  background: url( 'images/header__logo.jpg' ) no-repeat;
+  width: 131px;
+  height: 25px;
+
+}
+
+/*-----------------------------
+/*------------ NAV ------------
+-----------------------------*/
+
+$nav-spacing: 14px;
+
+.site-nav {
+
+  position: absolute;
+  right: 45px;
+  top: 37px;
+
+}
+
+
+.nav-button {
+
+  display: inline-block;
+  color: $cool-gray;
+  text-decoration: none;
+  @include transition-property( all );
+  @include transition-duration( .2s );
+
+  &:visited {
+    color: $cool-gray;
+  }
+  &:hover {
+    color: $cool-gray-hover;
+    @include scale( 1.05 );
+  }
+  &:active {
+    color: $cool-gray;
+  }
+
+}
+
+.nav__sign-in-button {
+  padding-right: $nav-spacing;
+}
+
+.nav__sign-up-button {
+  padding-left: $nav-spacing;
+}

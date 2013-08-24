@@ -1,0 +1,97 @@
+////////////////////////////////
+//           MODALS
+////////////////////////////////
+
+.modal-overlay {
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba( white, .9 );
+}
+
+.modal {
+  @extend .vertical-center;
+  position: relative;
+  left: 50%;
+  z-index: 20;
+  background-color: white;
+  border: 1px solid $line-gray;
+  padding: 60px 75px 80px;
+
+  input {
+    width: 100%;
+  }
+
+  label {
+    display: block;
+    margin-top: 30px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .submit-button {
+    margin-top: 30px;
+  }
+}
+
+.modal--sign-up {
+  width: 820px;
+  margin-left: -410px;
+}
+
+.modal--sign-in {
+  width: 820px;
+  margin-left: -410px;
+}
+
+.modal__columns {
+  @include clearfix;
+  margin-top: 40px;
+
+  $column-width: 338px;
+  $padding-width: 76px;
+
+  .left-column {
+    float: left;
+    width: $column-width;
+    padding-right: $padding-width;
+    border-right: 1px dotted $dotted-line-gray;
+  }
+
+  .right-column {
+    float: left;
+    width: $column-width;
+    padding-left: $padding-width;
+  }
+}
+
+.modal__cta-button {
+  margin-top: 20px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+
+.modal--sign-in {
+
+
+}
+
+.modal-header__sign-in-prompt {
+  position: relative;
+  top: -6px;
+  left: 30px;
+}
+
+.modal__close-button {
+  position: absolute;
+  right: -13px;
+  top: -13px;
+}

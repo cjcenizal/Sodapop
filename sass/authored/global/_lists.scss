@@ -1,0 +1,26 @@
+////////////////////////////////
+//           LISTS
+////////////////////////////////
+
+ul {
+
+  margin: 0;
+  padding: 0 0 0 32px;
+  list-style-type: none;
+
+  li {
+    padding-left: 28px;
+    p {
+      margin: 8px 0;
+    }
+  }
+
+}
+
+// Check lists and checked items.
+ul.checklist li,
+li.check {
+  background-image: url( images/check-list.jpg );
+  background-repeat: no-repeat;
+  background-position: 0px 5px;
+}

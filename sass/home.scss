@@ -1,0 +1,39 @@
+/**
+ * Uses BEM syntax.
+ * http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
+ *
+ * @author CJ Cenizal
+ */
+
+/* Vendor dependencies */
+@import "compass";
+@import "susy";
+@import "vendor/normalize";
+
+/* Authored dependencies */
+
+/* Global */
+@import "authored/global/normalize";
+@import "authored/global/mixins";
+@import "authored/global/grid";
+@import "authored/global/queries";
+@import "authored/global/colors";
+@import "authored/global/fonts";
+@import "authored/global/type-hierarchy";
+@import "authored/global/lists";
+
+/* Components */
+@import "authored/components/buttons";
+@import "authored/components/input";
+@import "authored/components/vertical-centerer";
+
+
+/* Parts */
+@import "authored/parts/site-header";
+@import "authored/parts/banner";
+@import "authored/parts/devices";
+@import "authored/parts/benefits";
+@import "authored/parts/modals";
+
+/* Page */
+@import "authored/pages/home";

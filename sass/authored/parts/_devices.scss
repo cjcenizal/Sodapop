@@ -1,0 +1,25 @@
+////////////////////////////////
+//           DEVICES
+////////////////////////////////
+
+.devices {
+  position: relative;
+  min-height: 385px;
+}
+
+.devices__inner {
+  position: absolute;
+  width: 100%;
+  right: 24px;
+  z-index: 1;
+  min-height: 385px;
+}
+
+.devices__image {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  max-width: 434px;
+}

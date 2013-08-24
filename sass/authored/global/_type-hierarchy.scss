@@ -1,0 +1,113 @@
+////////////////////////////////
+//         TYPE HIERARCHY
+////////////////////////////////
+
+/*-----------------------------
+/*---------- BASICS -----------
+-----------------------------*/
+
+h1 {
+  font-family: $title-font;
+  font-size: 36px;
+  font-weight: 200;
+  color: $cool-gray;
+}
+
+p {
+  font-family: $base-font;
+  font-size: 14px;
+  line-height: 20px;
+  color: $cool-gray;
+
+  &.small {
+    font-size: 13px;
+    line-height: 16px;
+  }
+}
+
+/*-----------------------------
+/*---------- STATES -----------
+-----------------------------*/
+
+h1,
+h2,
+h3,
+h4,
+p,
+.micro {
+  &.is-reverse {
+    color: white;
+  }
+  &.is-inline {
+    display: inline;
+  }
+}
+
+/*-----------------------------
+/*---------- LINKS ------------
+-----------------------------*/
+
+a {
+
+  display: inline-block;
+  color: $blue;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:visited {
+    color: $purple;
+  }
+
+  &.is-perm:visited {
+    color: $blue;
+  }
+
+  &.is-perm:hover,
+  &:hover {
+    color: $blue;
+    text-decoration: underline;
+  }
+
+  &.is-perm:active,
+  &:active {
+    color: $orangered;
+  }
+}
+
+/*-----------------------------
+/*-------- MICRO-COPY ---------
+-----------------------------*/
+
+.micro {
+
+  font-family: $micro-font;
+  color: $cool-gray;
+  text-transform: uppercase;
+  font-size: 11px;
+  line-height: 18px;
+  font-weight: 800;
+  letter-spacing: 1px;
+
+}
+
+.micro a,
+a.micro {
+
+  display: inline-block;
+  color: $cool-gray;
+  text-decoration: none;
+  @include transition-property( all );
+  @include transition-duration( .2s );
+
+  &:visited {
+    color: $cool-gray;
+  }
+  &:hover {
+    color: $cool-gray-hover;
+    @include scale( 1.05 );
+  }
+  &:active {
+    color: $cool-gray;
+  }
+
+}
