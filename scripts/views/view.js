@@ -6,10 +6,16 @@ define( [ "unit", "cell", "grid", "rules" ],
     // Constants.
     var CONNECTION_LENGTH = 4;
 
-
-		// Create game stuff.
+		// Model.
 		var grid = new Grid();
+
+		// Services.
 		var rules = new Rules();
+
+		// View layer.
+
+		// Background.
+		// Pieces.
 
 
 		// Fill empty Cells with new Units.

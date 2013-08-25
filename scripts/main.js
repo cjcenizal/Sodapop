@@ -19,10 +19,11 @@ require.config( {
 } );
 require( [
   "underscore",
-  "loop"
+  "controllers/loop"
 ], function(
   _,
-  loop
+  Loop
 ) {
-  //loop.start();
+  var loop = new Loop();
+  loop.start();
 } );

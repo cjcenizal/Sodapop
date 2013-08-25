@@ -1,14 +1,11 @@
-define( [ "unit", "grid" ],
-  function( Unit, Grid ) {
+define( [ "models/unit" ],
+  function( Unit ) {
     'use strict';
 
     /**
      * Data structure for operating a game.
      */
     function Rules() {
-      
-      //this.connectionLength = params[ "connectionLength" ] || 3;
-
     }
 
     // Define Game API.

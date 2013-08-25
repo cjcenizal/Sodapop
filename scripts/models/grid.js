@@ -1,4 +1,4 @@
-define( [ "cell" ],
+define( [ "models/cell" ],
   function( Cell ) {
     'use strict';
 
