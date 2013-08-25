@@ -1,20 +1,30 @@
-define( [ "models/grid", "controllers/rules" ],
-  function( Grid, Rules ) {
+define( [ "easel", "models/grid", "controllers/rules" ],
+  function( easel, Grid, Rules ) {
 
     'use strict';
-
 
 		// Constants.
     var CONNECTION_LENGTH = 4;
 
 		function Loop( params ) {
 			// Models.
-			this.grid = new Grid();
+			this.grid = new Grid( {
+				width : 10,
+				height : 16
+			} );
 
 			// Logic.
 			this.rules = new Rules();
 
 			// View.
+
+	    var canvas = document.getElementById( "gameCanvas" );
+	    var stage = new createjs.Stage( canvas );
+	    var bananaImage = new Image();
+      bananaImage.src = "images/banana.png";
+      bananaImage.onload = handleImageLoad;
+
+
 			// Create background.
 			// Create pieces.
 			// On draw, composite them.

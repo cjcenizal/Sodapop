@@ -8,7 +8,8 @@ require.config( {
   baseUrl: "scripts",
   urlArgs: "bust=" +  ( new Date() ).getTime(),
   paths: {
-    "underscore" : "vendor/underscore-min"
+    "underscore" : "vendor/underscore-min",
+    "easel" : "vendor/easeljs-0.6.1.min"
   },
   shim: {
     underscore: {
