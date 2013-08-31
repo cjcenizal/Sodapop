@@ -1,5 +1,5 @@
-define( [],
-  function() {
+define( [ "services/events" ],
+  function( Events ) {
     'use strict';
 
     /**
@@ -41,6 +41,7 @@ define( [],
         this.contents = contents;
         if ( contents ) {
           this.contents.setCell( this );
+          Events.dispatchEvent( Events.UNIT_MOVED, contents );
         }
       },
 

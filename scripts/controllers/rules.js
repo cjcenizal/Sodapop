@@ -1,5 +1,5 @@
-define( [ "models/unit" ],
-  function( Unit ) {
+define( [ "models/unit", "services/events" ],
+  function( Unit, Events ) {
     'use strict';
 
     /**
@@ -37,17 +37,19 @@ define( [ "models/unit" ],
           var connection = [];
           for ( var x = 0; x < gridWidth; x++ ) {
             var unit = grid.getCellAt( x, y ).getContents();
-            if ( currentTypeId == unit.typeId ) {
-              hits ++;
-            } else {
-              if ( hits >= connectionLength ) {
-                horizontalConnections.push( connection );
+            if ( unit ) {
+              if ( currentTypeId == unit.type.id ) {
+                hits ++;
+              } else {
+                if ( hits >= connectionLength ) {
+                  horizontalConnections.push( connection );
+                }
+                hits = 0;
+                currentTypeId = unit.type.id;
+                connection = [];
               }
-              hits = 0;
-              currentTypeId = unit.typeId;
-              connection = [];
+              connection.push( unit );
             }
-            connection.push( unit );
           }
           if ( hits >= connectionLength ) {
             horizontalConnections.push( connection );
@@ -61,17 +63,19 @@ define( [ "models/unit" ],
           var connection = [];
           for ( var y = 0; y < gridHeight; y++ ) {
             var unit = grid.getCellAt( x, y ).getContents();
-            if ( currentTypeId == unit.typeId ) {
-              hits ++;
-            } else {
-              if ( hits >= connectionLength ) {
-                verticalConnections.push( connection );
+            if ( unit ) {
+              if ( currentTypeId == unit.type.id ) {
+                hits ++;
+              } else {
+                if ( hits >= connectionLength ) {
+                  verticalConnections.push( connection );
+                }
+                hits = 0;
+                currentTypeId = unit.type.id;
+                connection = [];
               }
-              hits = 0;
-              currentTypeId = unit.typeId;
-              connection = [];
+              connection.push( unit );
             }
-            connection.push( unit );
           }
           if ( hits >= connectionLength ) {
             verticalConnections.push( connection );
@@ -118,7 +122,9 @@ define( [ "models/unit" ],
         for ( var x = 0; x < gridWidth; x++ ) {
           var cell = grid.getCellAt( x, 0 );
           if ( !cell.hasContents() ) {
-            cell.setContents( Unit.create() );
+            var newUnit = Unit.create();
+            Events.dispatchEvent( Events.UNIT_ADDED, newUnit );
+            cell.setContents( newUnit );
           }
         }
       },

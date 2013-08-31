@@ -16,7 +16,7 @@ require.config( {
       exports: "_"
     }
   },
-  deps: ["underscore"]
+  deps: [ "underscore" ]
 } );
 require( [
   "underscore",

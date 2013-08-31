@@ -1,5 +1,11 @@
-define( [ "easel", "models/grid", "controllers/rules" ],
-  function( easel, Grid, Rules ) {
+define( [
+	"easel",
+	"models/unit",
+	"models/grid",
+	"controllers/rules",
+	"services/events"
+	],
+  function( easel, Unit, Grid, Rules, Events ) {
 
     'use strict';
 
@@ -7,27 +13,36 @@ define( [ "easel", "models/grid", "controllers/rules" ],
     var CONNECTION_LENGTH = 4;
 
 		function Loop( params ) {
+			
 			// Models.
 			this.grid = new Grid( {
-				width : 10,
-				height : 16
+				width : 8,
+				height : 12
 			} );
 
 			// Logic.
 			this.rules = new Rules();
 
 			// View.
+	    this.canvas = document.getElementById( "gameCanvas" );
+	    this.stage = new createjs.Stage( this.canvas );
 
-	    var canvas = document.getElementById( "gameCanvas" );
-	    var stage = new createjs.Stage( canvas );
-	    var bananaImage = new Image();
-      bananaImage.src = "images/banana.png";
-      bananaImage.onload = handleImageLoad;
+	    // Units.
+	    this.units = [];
 
+	    // Events.
+			var self = this;
 
-			// Create background.
-			// Create pieces.
-			// On draw, composite them.
+			Events.addListener( Events.UNIT_ADDED, function( unit ) {
+				var sprite = unit.sprite =  new createjs.Bitmap( unit.type.image );
+				self.stage.addChild( sprite );
+			} );
+
+			Events.addListener( Events.UNIT_MOVED, function( unit ) {
+				unit.sprite.x = Unit.WIDTH * unit.cell.x;
+				unit.sprite.y = Unit.HEIGHT * unit.cell.y;
+			} );
+
     };
 
     Loop.prototype = {
@@ -35,16 +50,23 @@ define( [ "easel", "models/grid", "controllers/rules" ],
       constructor : Loop,
 
     	start : function() {
-    		this.update();
+	 			
+				var self = this;
+				setInterval( function() {
+					self.update();
+				}, 60 / 1000 );
+
     	},
 
     	update : function() {
+
+    		this.stage.update();
 
 				var rules = this.rules;
 				var grid = this.grid;
 
 				// Fill empty Cells with new Units.
-				while ( rules.areAnyCellsEmptyInGrid( grid ) ) {
+				if ( rules.areAnyCellsEmptyInGrid( grid ) ) {
 
 					// Move down.
 					if ( rules.canUnitsMoveDownInGrid( grid ) ) {
@@ -54,86 +76,100 @@ define( [ "easel", "models/grid", "controllers/rules" ],
 					// Fill in empty top row cells.
 					rules.addUnitsToTopOfGrid( grid );
 
-					this.draw();
 				}
 
-				// Detect and cache connections.
-				var connections = rules.getAllConnectionsInGrid( grid, CONNECTION_LENGTH );
-				for ( var i = 0; i < connections.length; i++ ) {
-					for ( var j = 0; j < connections[i].length; j++ ) {
-						connections[i][j].setConnected( true );
-					}
-				}
-				this.draw();
 
-				// Randomly destroy one connection.
-				if ( connections.length > 0 ) {
-					var connection = connections[ Math.floor( Math.random() * connections.length ) ];
-					for ( var i = 0; i < connection.length; i++ ) {
-						connection[ i ].destroy();
-					}
-				}
-				this.draw();
+				// // Fill empty Cells with new Units.
+				// while ( rules.areAnyCellsEmptyInGrid( grid ) ) {
 
-				// Reset connections.
-				rules.resetConnectionsInGrid( grid );
+				// 	// Move down.
+				// 	if ( rules.canUnitsMoveDownInGrid( grid ) ) {
+				// 		rules.moveUnitsDownInGrid( grid );
+				// 	}
 
-				// Apply reorganization algo:
-				// Cycle: shift-down, shift-down-right, shift-down, shift-down-left, repeat.
+				// 	// Fill in empty top row cells.
+				// 	rules.addUnitsToTopOfGrid( grid );
 
-				var movingUnits = true;
-				var isDownLeft = true;
+				// }
 
-				while ( movingUnits ) {
 
-					// 1) Units move to neighboring empty cells in a downwards fashion
-					while ( rules.canUnitsMoveDownInGrid( grid) ) {
-						rules.moveUnitsDownInGrid( grid );
-						this.draw();
-					}
+				// // Detect and cache connections.
+				// var connections = rules.getAllConnectionsInGrid( grid, CONNECTION_LENGTH );
+				// for ( var i = 0; i < connections.length; i++ ) {
+				// 	for ( var j = 0; j < connections[i].length; j++ ) {
+				// 		connections[i][j].setConnected( true );
+				// 	}
+				// }
+				// this.draw();
 
-					// 2) Move units down-right/down-left to fill empty column.
-					if ( isDownLeft ) {
-						if ( rules.canUnitsMoveDownRightInGrid( grid ) ) {
-							rules.moveUnitsDownRightInGrid( grid );
-							this.draw();
-						} else {
-							if ( !rules.canUnitsMoveDownLeftInGrid( grid ) ) {
-						  	movingUnits = false;
-							}
-						}
-					} else {
-						if ( rules.canUnitsMoveDownLeftInGrid( grid ) ) {
-							rules.moveUnitsDownLeftInGrid( grid );
-							this.draw();
-						} else {
-							if ( !rules.canUnitsMoveDownRightInGrid( grid ) ) {
-							  movingUnits = false;
-							}
-						}
-					}
+				// // Randomly destroy one connection.
+				// if ( connections.length > 0 ) {
+				// 	var connection = connections[ Math.floor( Math.random() * connections.length ) ];
+				// 	for ( var i = 0; i < connection.length; i++ ) {
+				// 		connection[ i ].destroy();
+				// 	}
+				// }
+				// this.draw();
 
-					if ( rules.canUnitsMoveDownInGrid( grid ) ) {
-						movingUnits = true;
-					}
+				// // Reset connections.
+				// rules.resetConnectionsInGrid( grid );
 
-					isDownLeft = !isDownLeft;
+				// // Apply reorganization algo:
+				// // Cycle: shift-down, shift-down-right, shift-down, shift-down-left, repeat.
 
-				}
+				// var movingUnits = true;
+				// var isDownLeft = true;
 
-				// Fill empty Cells with new Units.
-				while ( rules.areAnyCellsEmptyInGrid( grid ) ) {
+				// while ( movingUnits ) {
 
-					// Move down.
-					if ( rules.canUnitsMoveDownInGrid( grid ) ) {
-						rules.moveUnitsDownInGrid( grid );
-					}
+				// 	// 1) Units move to neighboring empty cells in a downwards fashion
+				// 	while ( rules.canUnitsMoveDownInGrid( grid) ) {
+				// 		rules.moveUnitsDownInGrid( grid );
+				// 		this.draw();
+				// 	}
 
-					// Fill in empty top row cells.
-					rules.addUnitsToTopOfGrid( grid );
+				// 	// 2) Move units down-right/down-left to fill empty column.
+				// 	if ( isDownLeft ) {
+				// 		if ( rules.canUnitsMoveDownRightInGrid( grid ) ) {
+				// 			rules.moveUnitsDownRightInGrid( grid );
+				// 			this.draw();
+				// 		} else {
+				// 			if ( !rules.canUnitsMoveDownLeftInGrid( grid ) ) {
+				// 		  	movingUnits = false;
+				// 			}
+				// 		}
+				// 	} else {
+				// 		if ( rules.canUnitsMoveDownLeftInGrid( grid ) ) {
+				// 			rules.moveUnitsDownLeftInGrid( grid );
+				// 			this.draw();
+				// 		} else {
+				// 			if ( !rules.canUnitsMoveDownRightInGrid( grid ) ) {
+				// 			  movingUnits = false;
+				// 			}
+				// 		}
+				// 	}
 
-					this.draw();
-				}
+				// 	if ( rules.canUnitsMoveDownInGrid( grid ) ) {
+				// 		movingUnits = true;
+				// 	}
+
+				// 	isDownLeft = !isDownLeft;
+
+				// }
+
+				// // Fill empty Cells with new Units.
+				// while ( rules.areAnyCellsEmptyInGrid( grid ) ) {
+
+				// 	// Move down.
+				// 	if ( rules.canUnitsMoveDownInGrid( grid ) ) {
+				// 		rules.moveUnitsDownInGrid( grid );
+				// 	}
+
+				// 	// Fill in empty top row cells.
+				// 	rules.addUnitsToTopOfGrid( grid );
+
+				// 	this.draw();
+				// }
 
 
 
