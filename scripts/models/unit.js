@@ -1,5 +1,5 @@
-define( ["underscore"],
-  function(_) {
+define( [ "underscore", "services/events" ],
+  function( _, Events ) {
     'use strict';
 
     /**
@@ -78,6 +78,7 @@ define( ["underscore"],
 
       destroy : function() {
         this.cell.setContents( null );
+        Events.dispatchEvent( Events.UNIT_REMOVED, this );
       }
 
     }

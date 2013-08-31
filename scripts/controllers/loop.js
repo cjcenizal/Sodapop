@@ -10,10 +10,12 @@ define( [
     'use strict';
 
 		// Constants.
-    var CONNECTION_LENGTH = 4;
+    var CONNECTION_LENGTH = 2;
+    var FPS = 5;
+    var SPEED = 1000 / FPS;
 
 		function Loop( params ) {
-			
+
 			// Models.
 			this.grid = new Grid( {
 				width : 8,
@@ -30,6 +32,11 @@ define( [
 	    // Units.
 	    this.units = [];
 
+	    // State.
+	    this.movingUnits = false;
+	    this.isDownLeft = false;
+	    this.timeStep = 0;
+
 	    // Events.
 			var self = this;
 
@@ -43,6 +50,10 @@ define( [
 				unit.sprite.y = Unit.HEIGHT * unit.cell.y;
 			} );
 
+			Events.addListener( Events.UNIT_REMOVED, function( unit ) {
+				self.stage.removeChild( unit.sprite );
+			} );
+
     };
 
     Loop.prototype = {
@@ -52,130 +63,107 @@ define( [
     	start : function() {
 	 			
 				var self = this;
-				setInterval( function() {
+				this.intervalidId = setInterval( function() {
 					self.update();
-				}, 60 / 1000 );
+				}, SPEED );
 
     	},
 
+    	stop : function() {
+    		this.timeStep = 0;
+    		clearInterval( this.intervalidId );
+    	},
+
     	update : function() {
+
+    		this.timeStep++;
+
+    		if ( this.timeStep > 40 ) {
+    			this.stop();
+    			console.log("LOOP STOPPED")
+    		}
+    		console.log(this.timeStep)
 
     		this.stage.update();
 
 				var rules = this.rules;
 				var grid = this.grid;
 
-				// Fill empty Cells with new Units.
-				if ( rules.areAnyCellsEmptyInGrid( grid ) ) {
 
-					// Move down.
-					if ( rules.canUnitsMoveDownInGrid( grid ) ) {
+				// Move first.
+				// Apply reorganization algo:
+			 	// Cycle: shift-down, shift-down-right, shift-down, shift-down-left, repeat.
+				if ( this.movingUnits ) {
+
+					// 1) Units move to neighboring empty cells in a downwards fashion
+					if ( rules.canUnitsMoveDownInGrid( grid) ) {
 						rules.moveUnitsDownInGrid( grid );
 					}
 
-					// Fill in empty top row cells.
-					rules.addUnitsToTopOfGrid( grid );
+					// 2) Move units down-right/down-left to fill empty column.
+					if ( this.isDownLeft ) {
+						if ( rules.canUnitsMoveDownRightInGrid( grid ) ) {
+							rules.moveUnitsDownRightInGrid( grid );
+						} else {
+							if ( !rules.canUnitsMoveDownLeftInGrid( grid ) ) {
+						  	this.movingUnits = false;
+							}
+						}
+					} else {
+						if ( rules.canUnitsMoveDownLeftInGrid( grid ) ) {
+							rules.moveUnitsDownLeftInGrid( grid );
+						} else {
+							if ( !rules.canUnitsMoveDownRightInGrid( grid ) ) {
+							  this.movingUnits = false;
+							}
+						}
+					}
+
+					// if ( rules.canUnitsMoveDownInGrid( grid ) ) {
+					// 	this.movingUnits = true;
+					// }
+
+					this.isDownLeft = !this.isDownLeft;
+
+				} else {
+
+
+					// Fill empty Cells with new Units.
+					if ( rules.areAnyCellsEmptyInGrid( grid ) ) {
+
+						// Move down.
+						if ( rules.canUnitsMoveDownInGrid( grid ) ) {
+							rules.moveUnitsDownInGrid( grid );
+						}
+
+						// Fill in empty top row cells.
+						rules.addUnitsToTopOfGrid( grid );
+
+					} else {
+
+						// Detect and cache connections.
+						var connections = rules.getAllConnectionsInGrid( grid, CONNECTION_LENGTH );
+						for ( var i = 0; i < connections.length; i++ ) {
+							for ( var j = 0; j < connections[i].length; j++ ) {
+								connections[i][j].setConnected( true );
+							}
+						}
+
+						// Randomly destroy one connection.
+						if ( connections.length > 0 ) {
+							var connection = connections[ Math.floor( Math.random() * connections.length ) ];
+							for ( var i = 0; i < connection.length; i++ ) {
+								connection[ i ].destroy();
+							}
+						}
+
+						// Reset connections.
+						rules.resetConnectionsInGrid( grid );
+
+					}
 
 				}
 
-
-				// // Fill empty Cells with new Units.
-				// while ( rules.areAnyCellsEmptyInGrid( grid ) ) {
-
-				// 	// Move down.
-				// 	if ( rules.canUnitsMoveDownInGrid( grid ) ) {
-				// 		rules.moveUnitsDownInGrid( grid );
-				// 	}
-
-				// 	// Fill in empty top row cells.
-				// 	rules.addUnitsToTopOfGrid( grid );
-
-				// }
-
-
-				// // Detect and cache connections.
-				// var connections = rules.getAllConnectionsInGrid( grid, CONNECTION_LENGTH );
-				// for ( var i = 0; i < connections.length; i++ ) {
-				// 	for ( var j = 0; j < connections[i].length; j++ ) {
-				// 		connections[i][j].setConnected( true );
-				// 	}
-				// }
-				// this.draw();
-
-				// // Randomly destroy one connection.
-				// if ( connections.length > 0 ) {
-				// 	var connection = connections[ Math.floor( Math.random() * connections.length ) ];
-				// 	for ( var i = 0; i < connection.length; i++ ) {
-				// 		connection[ i ].destroy();
-				// 	}
-				// }
-				// this.draw();
-
-				// // Reset connections.
-				// rules.resetConnectionsInGrid( grid );
-
-				// // Apply reorganization algo:
-				// // Cycle: shift-down, shift-down-right, shift-down, shift-down-left, repeat.
-
-				// var movingUnits = true;
-				// var isDownLeft = true;
-
-				// while ( movingUnits ) {
-
-				// 	// 1) Units move to neighboring empty cells in a downwards fashion
-				// 	while ( rules.canUnitsMoveDownInGrid( grid) ) {
-				// 		rules.moveUnitsDownInGrid( grid );
-				// 		this.draw();
-				// 	}
-
-				// 	// 2) Move units down-right/down-left to fill empty column.
-				// 	if ( isDownLeft ) {
-				// 		if ( rules.canUnitsMoveDownRightInGrid( grid ) ) {
-				// 			rules.moveUnitsDownRightInGrid( grid );
-				// 			this.draw();
-				// 		} else {
-				// 			if ( !rules.canUnitsMoveDownLeftInGrid( grid ) ) {
-				// 		  	movingUnits = false;
-				// 			}
-				// 		}
-				// 	} else {
-				// 		if ( rules.canUnitsMoveDownLeftInGrid( grid ) ) {
-				// 			rules.moveUnitsDownLeftInGrid( grid );
-				// 			this.draw();
-				// 		} else {
-				// 			if ( !rules.canUnitsMoveDownRightInGrid( grid ) ) {
-				// 			  movingUnits = false;
-				// 			}
-				// 		}
-				// 	}
-
-				// 	if ( rules.canUnitsMoveDownInGrid( grid ) ) {
-				// 		movingUnits = true;
-				// 	}
-
-				// 	isDownLeft = !isDownLeft;
-
-				// }
-
-				// // Fill empty Cells with new Units.
-				// while ( rules.areAnyCellsEmptyInGrid( grid ) ) {
-
-				// 	// Move down.
-				// 	if ( rules.canUnitsMoveDownInGrid( grid ) ) {
-				// 		rules.moveUnitsDownInGrid( grid );
-				// 	}
-
-				// 	// Fill in empty top row cells.
-				// 	rules.addUnitsToTopOfGrid( grid );
-
-				// 	this.draw();
-				// }
-
-
-
-
-
-				// Apply graphics.
 
 				// Respond to mouse interaction.
 
